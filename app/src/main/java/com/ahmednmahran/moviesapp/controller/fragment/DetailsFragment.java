@@ -18,6 +18,8 @@ import com.ahmednmahran.moviesapp.view.MovieDetailsView;
 public class DetailsFragment extends Fragment implements DataRetrieveListener {
 
     private MovieDetailsView movieView;
+    private Movie movie;
+    private OnFavoriteChangeListener onFavoriteChangeListener;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -48,8 +50,11 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     @Override
     public void onDataRetrieved(Object data) {
         try{
-            Movie movie = ((Movie)data);
+            movie = ((Movie)data);
             movieView.populateUiData(movie);
+            if(onFavoriteChangeListener != null){
+                onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(), false);
+            }
 
         }catch (ClassCastException e){
             Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
@@ -59,5 +64,33 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     @Override
     public void onRetrieveFailed() {
         Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * listen to favorite change
+     * @param listener
+     */
+    public void setOnFavoriteChangeListener(OnFavoriteChangeListener listener){
+        this.onFavoriteChangeListener = listener;
+        if(movie != null)
+            onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(),false);
+    }
+    public void toggleFavorite() {
+        if(movie != null){
+            if(movie.isFavourite()) {
+                movie.setFavourite(false);
+            }
+            else{
+                movie.setFavourite(true);
+            }
+            movie.save();
+            if(onFavoriteChangeListener != null){
+                onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(), true);
+            }
+        }
+    }
+
+    public interface OnFavoriteChangeListener{
+        void onFavoriteChanged(boolean currentState, boolean shouldShowMessage);
     }
 }

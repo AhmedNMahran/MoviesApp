@@ -8,8 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.ahmednmahran.moviesapp.R;
+import com.ahmednmahran.moviesapp.controller.fragment.DetailsFragment;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements DetailsFragment.OnFavoriteChangeListener {
+
+    private DetailsFragment detailsFragment;
+    private FloatingActionButton favoriteFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,15 +21,33 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        detailsFragment = ((DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_fragment));
+        favoriteFab = (FloatingActionButton) findViewById(R.id.fab);
+        favoriteFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                detailsFragment.toggleFavorite();
+
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        detailsFragment.setOnFavoriteChangeListener(this);
+
+    }
+
+    @Override
+    public void onFavoriteChanged(boolean favorite, boolean shouldShowMessage) {
+        if(favorite){
+            favoriteFab.setImageResource(R.drawable.ic_favorite_white_24dp);
+            if(shouldShowMessage)
+                Snackbar.make(favoriteFab, "Movie added to favorites", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }else{
+            favoriteFab.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+            if(shouldShowMessage)
+                Snackbar.make(favoriteFab, "Movie removed from favorites", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 }

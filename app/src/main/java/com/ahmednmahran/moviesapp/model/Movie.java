@@ -30,7 +30,7 @@ public class Movie extends Model{
     @SerializedName("release_date")
     private String releaseDate;
 
-    @Column(name = "genre_ids")
+//    @Column(name = "genre_ids")
     @SerializedName("genre_ids")
     private int[] genreIds;
 
