@@ -1,6 +1,7 @@
-package com.ahmednmahran.moviesapp.controller;
+package com.ahmednmahran.moviesapp.controller.listeners;
 
 
+import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
 import com.ahmednmahran.moviesapp.controller.networking.FetchDataTask;
 import com.ahmednmahran.moviesapp.controller.networking.ParseDataTask;
 
@@ -11,19 +12,19 @@ import com.ahmednmahran.moviesapp.controller.networking.ParseDataTask;
  * Mobile 2 : +2 011 44 333 595
  */
 
-public class PostDataRetriever implements DataRetrieveListener{
-    private static final String LOG_TAG = PostDataRetriever.class.getSimpleName();
+public class DataRetriever implements DataRetrieveListener {
+    private static final String LOG_TAG = DataRetriever.class.getSimpleName();
     private DataRetrieveListener dataRetrieveListener;
     private FetchDataTask fetchDataTask;
-    public PostDataRetriever(DataRetrieveListener dataRetrieveListener) {
+    public DataRetriever(DataRetrieveListener dataRetrieveListener) {
         this.dataRetrieveListener = dataRetrieveListener;
     }
 
-    public PostDataRetriever retrieve(String url, final Class<?> classType){
+    public DataRetriever retrieve(String url, final Class<?> classType){
         fetchDataTask = new FetchDataTask(new DataRetrieveListener() {
             @Override
             public void onDataRetrieved(Object data) {
-                new ParseDataTask(PostDataRetriever.this,classType).execute((String)data);
+                new ParseDataTask(DataRetriever.this,classType).execute((String)data);
             }
 
             @Override

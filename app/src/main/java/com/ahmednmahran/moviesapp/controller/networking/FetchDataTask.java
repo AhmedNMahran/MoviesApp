@@ -41,7 +41,7 @@ public class FetchDataTask extends AsyncTask<String,Void,Object> {
         // Will contain the raw JSON response as a string.
         String jsonStr = null;
 
-        Object preparedData = null;
+        Object preparedData = null; // the object that will be finally returned to the onPostExecute method.
         try {
 
             URL url = new URL(Uri.parse(params[0]).toString());
@@ -70,14 +70,13 @@ public class FetchDataTask extends AsyncTask<String,Void,Object> {
             }
 
             if (buffer.length() == 0) {
-                // Stream was empty.  No point in parsing.
+                // Stream was empty.
                 return null;
             }
             jsonStr = buffer.toString();
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-            // If the code didn't successfully get the data, there's no point in attemping
-            // to parse it.
+            // If the code didn't successfully get the data.
             return null;
         } finally{
             if (urlConnection != null) {
