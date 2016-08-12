@@ -4,7 +4,17 @@
     tools:context="com.ahmednmahran.moviesapp.MainActivity">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="120"
         android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_popular"
+        android:orderInCategory="110"
+        android:title="@string/action_popular"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_top"
+        android:orderInCategory="110"
+        android:title="@string/action_top"
         app:showAsAction="never" />
 </menu>

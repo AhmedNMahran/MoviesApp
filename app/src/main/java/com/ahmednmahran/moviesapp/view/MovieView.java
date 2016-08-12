@@ -65,7 +65,10 @@ public class MovieView extends FrameLayout{
 //            }
 //        });
 //        builder.build().load(movie.getMovieThumbnail()).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.stat_notify_error).fit().into(imgThumbnail);
-        Picasso.with(mContext).load(movie.getMovieThumbnail()).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.stat_notify_error).fit().into(imgThumbnail);
+        String posterPath = movie != null ? movie.getPosterPath() : "";
+        if(posterPath == null)
+            posterPath = "";
+        Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185//"+ posterPath).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.stat_notify_error).fit().into(imgThumbnail);
 
     }
 
