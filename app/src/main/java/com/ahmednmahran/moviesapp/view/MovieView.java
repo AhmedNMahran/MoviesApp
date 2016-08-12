@@ -23,6 +23,7 @@ public class MovieView extends FrameLayout{
     protected LayoutInflater mInflater;
     protected View rootView;
     protected ImageView imgThumbnail;
+    private static final String TAG=MovieView.class.getSimpleName();
 
     public MovieView(Context context) {
         super(context);
@@ -53,6 +54,17 @@ public class MovieView extends FrameLayout{
             if(mInflateListener != null)
                 mInflateListener.onInflateFailed(this);
         }
+//        Picasso.Builder builder = new Picasso.Builder(mContext);
+//        builder.listener(new Picasso.Listener()
+//        {
+//            @Override
+//            public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception)
+//            {
+//                Log.e(TAG, "onImageLoadFailed: ", exception);
+////                exception.printStackTrace();
+//            }
+//        });
+//        builder.build().load(movie.getMovieThumbnail()).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.stat_notify_error).fit().into(imgThumbnail);
         Picasso.with(mContext).load(movie.getMovieThumbnail()).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.stat_notify_error).fit().into(imgThumbnail);
 
     }
