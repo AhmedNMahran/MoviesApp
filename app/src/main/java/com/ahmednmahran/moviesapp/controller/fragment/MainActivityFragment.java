@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
@@ -41,7 +42,8 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     private ArrayList<String> dataList;
     private HashMap<String, String> parametersMap;
     private AppSettings appSettings;
-
+    private DataRetriever dataRetriever;
+    private ProgressBar progressBar;
     public MainActivityFragment() {
     }
 
@@ -56,6 +58,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         mRecyclerView.setHasFixedSize(true);
@@ -64,6 +67,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         mLayoutManager = new GridLayoutManager(getContext(),2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         appSettings = AppSettings.getAppPreference(getContext().getApplicationContext());
+        dataRetriever = new DataRetriever(this);
         getMoviesList(getString(R.string.popular));
         return rootView;
     }
@@ -89,11 +93,16 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
 
     private void getMoviesList(String requestType) {
         appSettings.setRequestType(requestType);
-        new DataRetriever(this).retrieve(appSettings.getRequestUrl(),Response.class);
+        if(dataRetriever != null) {
+            dataRetriever.cancelRequestIfRunning();
+            dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class);
+            progressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onDataRetrieved(Object data) {
+        progressBar.setVisibility(View.INVISIBLE);
 
         try{
             Movie[] movies = ((Response)data).getResults();
@@ -106,6 +115,6 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
 
     @Override
     public void onRetrieveFailed() {
-
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

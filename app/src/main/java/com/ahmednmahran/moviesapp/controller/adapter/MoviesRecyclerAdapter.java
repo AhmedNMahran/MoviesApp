@@ -12,7 +12,7 @@ import com.ahmednmahran.moviesapp.model.Movie;
 import com.ahmednmahran.moviesapp.view.MovieThumbnailView;
 import com.ahmednmahran.moviesapp.view.MovieView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ahmed Nabil on 12/08/2016.
@@ -23,10 +23,10 @@ import java.util.ArrayList;
  */
 public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.ViewHolder>{
     private Context mContext;
-    private ArrayList<String> mThumbnailsUrls;
+    private List<Movie> movies;
 
-    public MoviesRecyclerAdapter(Context context, ArrayList<String> mThumbnailsUrls) {
-        this.mThumbnailsUrls = mThumbnailsUrls;
+    public MoviesRecyclerAdapter(Context context, List<Movie> movies) {
+        this.movies = movies;
         this.mContext = context;
     }
 
@@ -40,11 +40,11 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Movie movie = new Movie(); // TODO: 12/08/2016 make real data
         holder.movieView.setInflateListener( new InflateListener() {
             @Override
             public void onInflated(View view) {
-                holder.movieView.populateUiData(movie);
+                if(movies != null)
+                    holder.movieView.populateUiData(movies.get(holder.getAdapterPosition()));
             }
 
             @Override
@@ -57,7 +57,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
     @Override
     public int getItemCount() {
-        return mThumbnailsUrls.size();
+        return movies.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,25 +71,33 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
 
         /**
-         * adds a new url to the dataset
+         * adds a new movie to movie list
          * @param position
-         * @param url
+         * @param movie
          */
-        public void add(int position, String url) {
-            if(mThumbnailsUrls != null)
-                mThumbnailsUrls.add(position, url);
+        public void add(int position, Movie movie) {
+            if(movies != null)
+                movies.add(position, movie);
             notifyItemInserted(position);
         }
 
         /**
-         * removes item whose url is this
-         * @param url
+         * removes this item from list
+         * @param moviePosition
+         * retutn true if removed. false otherwise
          */
-        public void remove(String url) {
-            int position = mThumbnailsUrls.indexOf(url);
-            if(mThumbnailsUrls != null)
-                mThumbnailsUrls.remove(position);
-            notifyItemRemoved(position);
+        public boolean remove(int moviePosition) {
+            if(movies == null)
+                return false;
+            try{
+                movies.remove(moviePosition);
+                notifyItemRemoved(moviePosition);
+                return true;
+            }catch (UnsupportedOperationException e){
+                return false;
+            }catch (IndexOutOfBoundsException e){
+                return false;
+            }
         }
     }
 }

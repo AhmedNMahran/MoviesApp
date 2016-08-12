@@ -16,6 +16,8 @@ public class DataRetriever implements DataRetrieveListener {
     private static final String LOG_TAG = DataRetriever.class.getSimpleName();
     private DataRetrieveListener dataRetrieveListener;
     private FetchDataTask fetchDataTask;
+    private ParseDataTask parseDataTask;
+
     public DataRetriever(DataRetrieveListener dataRetrieveListener) {
         this.dataRetrieveListener = dataRetrieveListener;
     }
@@ -24,7 +26,10 @@ public class DataRetriever implements DataRetrieveListener {
         fetchDataTask = new FetchDataTask(new DataRetrieveListener() {
             @Override
             public void onDataRetrieved(Object data) {
-                new ParseDataTask(DataRetriever.this,classType).execute((String)data);
+                if(parseDataTask != null)
+                    parseDataTask.cancel(true);
+                parseDataTask = new ParseDataTask(DataRetriever.this, classType);
+                parseDataTask.execute((String)data);
             }
 
             @Override
@@ -36,6 +41,11 @@ public class DataRetriever implements DataRetrieveListener {
         return this;
     }
 
+    public DataRetriever cancelRequestIfRunning(){
+        if(fetchDataTask != null)
+            fetchDataTask.cancel(true);
+        return this;
+    }
     @Override
     public void onDataRetrieved(Object data) {
         dataRetrieveListener.onDataRetrieved(data);
