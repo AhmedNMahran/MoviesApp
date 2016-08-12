@@ -3,6 +3,7 @@ package com.ahmednmahran.moviesapp.controller.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -21,6 +22,14 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
         setContentView(R.layout.activity_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        String stringExtra = getIntent().getStringExtra(getString(R.string.extra_title));
+        ActionBar supportActionBar = getSupportActionBar();
+        if(supportActionBar != null)
+        {
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            if(stringExtra != null )
+                supportActionBar.setTitle(stringExtra);
+        }
         detailsFragment = ((DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_fragment));
         favoriteFab = (FloatingActionButton) findViewById(R.id.fab);
         favoriteFab.setOnClickListener(new View.OnClickListener() {
@@ -30,7 +39,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
 
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         detailsFragment.setOnFavoriteChangeListener(this);
 

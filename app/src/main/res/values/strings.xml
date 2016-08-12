@@ -16,6 +16,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="db_name">movies_db.db</string>
+    <string name="extra_title">extra_title</string>
 
 
 </resources>

@@ -54,7 +54,9 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
                         public void onClick(View view) {
                             mContext.startActivity(new Intent(mContext, DetailsActivity.class).
                                     putExtra(mContext.getString(R.string.extra_id)
-                                            , movie.getMovieId()));
+                                            , movie.getMovieId())
+                                    .putExtra(mContext.getString(R.string.extra_title)
+                                            , movie.getOriginalTitle()));
                         }
                     });
                 }
