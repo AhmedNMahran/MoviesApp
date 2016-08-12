@@ -17,7 +17,6 @@ import com.ahmednmahran.moviesapp.model.Movie;
 public class MovieDetailsView extends MovieView {
 
     private TextView txtDetails,txtRate,txtOriginalName;
-    InflateListener inflateListener;
     public MovieDetailsView(Context context, InflateListener inflateListener) {
         super(context, inflateListener);
     }
@@ -26,16 +25,16 @@ public class MovieDetailsView extends MovieView {
 
         super.inflateMovieView(R.layout.movie_detail);
         if(rootView ==  null ) {
-            if(inflateListener != null)
-                inflateListener.onInflateFailed(this);
+            if(mInflateListener != null)
+                mInflateListener.onInflateFailed(this);
             return this;
         }
         imgThumbnail = (ImageView) rootView.findViewById(R.id.imgMovieThumbnail);
         txtDetails = (TextView) rootView.findViewById(R.id.txtDetails);
         txtRate = (TextView) rootView.findViewById(R.id.txtRating);
         txtOriginalName = (TextView) rootView.findViewById(R.id.txtOriginalName);
-        if(inflateListener != null)
-            inflateListener.onInflated(this);
+        if(mInflateListener != null)
+            mInflateListener.onInflated(this);
         return this;
     }
 
