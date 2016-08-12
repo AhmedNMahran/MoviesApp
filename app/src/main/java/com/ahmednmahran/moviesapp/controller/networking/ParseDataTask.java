@@ -5,7 +5,10 @@ import android.util.Log;
 
 import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
+import java.lang.reflect.Modifier;
 
 /**
  * Created by Ahmed Nabil on 27/07/2016.
@@ -36,7 +39,11 @@ public class ParseDataTask extends AsyncTask<String,Void,Object> {
     protected Object doInBackground(String... params) {
         try{
 
-            Gson gson = new Gson();
+            Gson gson =// new Gson();
+            new GsonBuilder()
+                    .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                    .serializeNulls()
+                    .create();
             String param = params[0];
             if(param == null || param.isEmpty())
                 return null;

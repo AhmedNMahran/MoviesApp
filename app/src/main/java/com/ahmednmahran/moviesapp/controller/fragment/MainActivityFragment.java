@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
 import com.ahmednmahran.moviesapp.controller.adapter.MoviesRecyclerAdapter;
@@ -106,6 +107,17 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
 
         try{
             Movie[] movies = ((Response)data).getResults();
+            ActiveAndroid.beginTransaction();
+            try {
+                for (int i = 0; i < movies.length; i++) {
+                    Movie movie = movies[i];
+                    movie.save();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            }
+            finally {
+                ActiveAndroid.endTransaction();
+            }
             moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), Arrays.asList(movies));
             mRecyclerView.setAdapter(moviesRecyclerAdapter);
         }catch (ClassCastException e){

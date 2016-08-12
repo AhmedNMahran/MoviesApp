@@ -1,5 +1,9 @@
 package com.ahmednmahran.moviesapp.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -9,32 +13,66 @@ import com.google.gson.annotations.SerializedName;
  * Mobile 2 : +2 011 44 333 595
  *
  */
-public class Movie {
+@Table(name = "Movies")
+public class Movie extends Model{
+
+    @Column(name = "poster_path")
     @SerializedName("poster_path")
     private String posterPath;
+
+    @Column(name = "adult")
     private boolean adult;
+
+    @Column(name = "overview")
     private String overview;
+
+    @Column(name = "release_date")
     @SerializedName("release_date")
     private String releaseDate;
+
+    @Column(name = "genre_ids")
     @SerializedName("genre_ids")
     private int[] genreIds;
+
+    @Column(name = "movie_id")
     private int id;
+
+    @Column(name = "original_title")
     @SerializedName("original_title")
     private String originalTitle;
+
+    @Column(name="original_language")
     @SerializedName("original_language")
     private String originalLanguage;
+
+    @Column(name = "title")
     private String title;
+
+
+    @Column(name ="backdrop_path")
     @SerializedName("backdrop_path")
     private String backdropPath;
+
+    @Column(name ="popularity")
     private String popularity;
+
+    @Column(name ="vote_count")
     private int vote_count;
+
+    @Column(name ="video")
     private boolean video;
+
+    @Column(name ="vote_average")
     private double vote_average;
 
+    @Expose
+    private boolean favourite;
     public Movie() {
+        super();
     }
 
     public Movie(String posterPath, boolean adult, String overview, String releaseDate, int[] genreIds, int id, String originalTitle, String originalLanguage, String title, String backdropPath, String popularity, int vote_count, boolean video, double vote_average) {
+        super();
         this.posterPath = posterPath;
         this.adult = adult;
         this.overview = overview;
@@ -91,7 +129,7 @@ public class Movie {
         this.genreIds = genreIds;
     }
 
-    public int getId() {
+    public int getMovieId() {
         return id;
     }
 
@@ -161,5 +199,13 @@ public class Movie {
 
     public void setVote_average(double vote_average) {
         this.vote_average = vote_average;
+    }
+
+    public boolean isFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
     }
 }

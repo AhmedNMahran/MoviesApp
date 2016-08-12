@@ -1,9 +1,11 @@
 package com.ahmednmahran.moviesapp.controller.listeners;
 
 
+import com.activeandroid.query.Select;
 import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
 import com.ahmednmahran.moviesapp.controller.networking.FetchDataTask;
 import com.ahmednmahran.moviesapp.controller.networking.ParseDataTask;
+import com.ahmednmahran.moviesapp.model.Movie;
 
 /**
  * Created by Ahmed Nabil on 27/07/2016.
@@ -22,6 +24,25 @@ public class DataRetriever implements DataRetrieveListener {
         this.dataRetrieveListener = dataRetrieveListener;
     }
 
+    /**
+     *
+     * @param id finds in DB by this id and notifies retrieve listener when finished
+     * @return {@link DataRetriever}
+     */
+    public DataRetriever retrieveById(int id){
+        Movie movie = new Select()
+                .from(Movie.class)
+                .where("movie_id = ?", id)
+                .executeSingle();
+        if(dataRetrieveListener != null){
+            if(movie != null)
+                dataRetrieveListener.onDataRetrieved(movie);
+            else{
+                dataRetrieveListener.onRetrieveFailed();
+            }
+        }
+        return this;
+    }
     public DataRetriever retrieve(String url, final Class<?> classType){
         fetchDataTask = new FetchDataTask(new DataRetrieveListener() {
             @Override
@@ -48,11 +69,13 @@ public class DataRetriever implements DataRetrieveListener {
     }
     @Override
     public void onDataRetrieved(Object data) {
-        dataRetrieveListener.onDataRetrieved(data);
+        if(dataRetrieveListener != null)
+            dataRetrieveListener.onDataRetrieved(data);
     }
 
     @Override
     public void onRetrieveFailed() {
-        dataRetrieveListener.onRetrieveFailed();
+        if(dataRetrieveListener != null)
+            dataRetrieveListener.onRetrieveFailed();
     }
 }

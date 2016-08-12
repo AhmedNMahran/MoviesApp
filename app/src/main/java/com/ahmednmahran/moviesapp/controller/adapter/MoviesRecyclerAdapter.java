@@ -1,12 +1,14 @@
 package com.ahmednmahran.moviesapp.controller.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
+import com.ahmednmahran.moviesapp.controller.activity.DetailsActivity;
 import com.ahmednmahran.moviesapp.controller.listeners.InflateListener;
 import com.ahmednmahran.moviesapp.model.Movie;
 import com.ahmednmahran.moviesapp.view.MovieThumbnailView;
@@ -44,7 +46,18 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             @Override
             public void onInflated(View view) {
                 if(movies != null)
-                    holder.movieView.populateUiData(movies.get(holder.getAdapterPosition()));
+                {
+                    final Movie movie = movies.get(holder.getAdapterPosition());
+                    holder.movieView.populateUiData(movie);
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mContext.startActivity(new Intent(mContext, DetailsActivity.class).
+                                    putExtra(mContext.getString(R.string.extra_id)
+                                            , movie.getMovieId()));
+                        }
+                    });
+                }
             }
 
             @Override
