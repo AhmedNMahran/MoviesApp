@@ -126,7 +126,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
             if(dataRetriever != null) {
                 dataRetriever.cancelRequestIfRunning();
                 if(online)
-                    dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class);
+                    dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class,true);
                 progressBar.setVisibility(View.VISIBLE);
             }
         }

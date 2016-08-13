@@ -22,12 +22,14 @@ public class DataRetriever implements DataRetrieveListener {
         this.dataRetrieveListener = dataRetrieveListener;
     }
 
-    public DataRetriever retrieve(String url, final Class<?> classType){
+    public DataRetriever retrieve(String url, final Class<?> classType, final boolean cancelRunningTask){
         fetchDataTask = new FetchDataTask(new DataRetrieveListener() {
             @Override
             public void onDataRetrieved(Object data) {
-                if(parseDataTask != null)
-                    parseDataTask.cancel(true);
+                if(cancelRunningTask) {
+                    if(parseDataTask != null)
+                        parseDataTask.cancel(true);
+                }
                 parseDataTask = new ParseDataTask(DataRetriever.this, classType);
                 parseDataTask.execute((String)data);
             }

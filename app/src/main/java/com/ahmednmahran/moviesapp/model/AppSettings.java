@@ -49,10 +49,22 @@ public class AppSettings {
         return settings.getString("requestType",mContext.getString(R.string.popular));
     }
 
+    /**
+     *
+     * @return
+     */
     public String getRequestUrl() {
+
         return mContext.getString(R.string.base_url)+getRequestType()+mContext.getString(R.string.api_key_param)+"="+mContext.getString(R.string.api_key);
     }
 
+    public String getMovieTrailersUrl(int movieId){
+        return mContext.getString(R.string.base_url)+"/"+movieId+mContext.getString(R.string.trailers_path)+mContext.getString(R.string.api_key_param)+"="+mContext.getString(R.string.api_key);
+    }
+
+    public String getMovieReviewsUrl(int movieId){
+        return mContext.getString(R.string.base_url)+"/"+movieId+mContext.getString(R.string.reviews_path)+mContext.getString(R.string.api_key_param)+"="+mContext.getString(R.string.api_key);
+    }
     /**
      * save these movies to be accessible locally
      * @param movies
