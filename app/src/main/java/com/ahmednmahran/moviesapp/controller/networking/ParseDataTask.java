@@ -3,12 +3,13 @@ package com.ahmednmahran.moviesapp.controller.networking;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
+import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import java.lang.reflect.Modifier;
+
 
 /**
  * Created by Ahmed Nabil on 27/07/2016.

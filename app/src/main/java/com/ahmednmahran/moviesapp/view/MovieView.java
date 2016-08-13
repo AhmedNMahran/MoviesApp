@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ahmednmahran.moviesapp.R;
-import com.ahmednmahran.moviesapp.controller.listeners.InflateListener;
+import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
 import com.ahmednmahran.moviesapp.model.Movie;
 import com.squareup.picasso.Picasso;
 

@@ -1,4 +1,4 @@
-package com.ahmednmahran.moviesapp.controller.listeners;
+package com.ahmednmahran.moviesapp.controller.listener;
 
 import android.view.View;
 

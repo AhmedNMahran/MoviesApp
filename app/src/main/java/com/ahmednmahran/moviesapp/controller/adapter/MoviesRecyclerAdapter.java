@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.activity.DetailsActivity;
-import com.ahmednmahran.moviesapp.controller.listeners.InflateListener;
+import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
 import com.ahmednmahran.moviesapp.model.Movie;
 import com.ahmednmahran.moviesapp.view.MovieThumbnailView;
 import com.ahmednmahran.moviesapp.view.MovieView;

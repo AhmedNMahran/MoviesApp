@@ -14,11 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.activeandroid.ActiveAndroid;
 import com.ahmednmahran.moviesapp.R;
-import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
 import com.ahmednmahran.moviesapp.controller.adapter.MoviesRecyclerAdapter;
-import com.ahmednmahran.moviesapp.controller.listeners.DataRetriever;
+import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
+import com.ahmednmahran.moviesapp.controller.retriever.MovieDataRetriever;
 import com.ahmednmahran.moviesapp.model.AppSettings;
 import com.ahmednmahran.moviesapp.model.Movie;
 import com.ahmednmahran.moviesapp.model.Response;
@@ -43,7 +42,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     private ArrayList<String> dataList;
     private HashMap<String, String> parametersMap;
     private AppSettings appSettings;
-    private DataRetriever dataRetriever;
+    private MovieDataRetriever dataRetriever;
     private ProgressBar progressBar;
     public MainActivityFragment() {
     }
@@ -68,8 +67,8 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         mLayoutManager = new GridLayoutManager(getContext(),2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         appSettings = AppSettings.getAppPreference(getContext().getApplicationContext());
-        dataRetriever = new DataRetriever(this);
-        getMoviesList(getString(R.string.popular));
+        dataRetriever = new MovieDataRetriever(this);
+        getMoviesList(appSettings.getRequestType(),true);
         return rootView;
     }
 
@@ -83,21 +82,53 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_popular:
-                getMoviesList(getString(R.string.popular));
+                getMoviesList(getString(R.string.popular),true);
             break;
             case R.id.action_top:
-                getMoviesList(getString(R.string.top_rated));
+                getMoviesList(getString(R.string.top_rated),true);
             break;
+            case R.id.action_favorite:
+                getMoviesFavourites();
+                break;
         }
         return true;
     }
 
-    private void getMoviesList(String requestType) {
-        appSettings.setRequestType(requestType);
-        if(dataRetriever != null) {
-            dataRetriever.cancelRequestIfRunning();
-            dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class);
-            progressBar.setVisibility(View.VISIBLE);
+    private void getMoviesFavourites() {
+        appSettings.setRequestType(getString(R.string.find_fav));
+        dataRetriever.setRetrieveListener(new DataRetrieveListener() {
+            @Override
+            public void onDataRetrieved(Object data) {
+                progressBar.setVisibility(View.INVISIBLE);
+
+                try{
+                    ArrayList<Movie> movies = (ArrayList<Movie>) data;
+                    moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), movies);
+                    mRecyclerView.setAdapter(moviesRecyclerAdapter);
+                }catch (ClassCastException e){
+                    Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onRetrieveFailed() {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+        dataRetriever.retrieveFavourites();
+    }
+
+    private void getMoviesList(String requestType,boolean online) {
+        if(requestType .equals(getString(R.string.find_fav)))
+            getMoviesFavourites();
+        else{
+            appSettings.setRequestType(requestType);
+            if(dataRetriever != null) {
+                dataRetriever.cancelRequestIfRunning();
+                if(online)
+                    dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class);
+                progressBar.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -107,17 +138,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
 
         try{
             Movie[] movies = ((Response)data).getResults();
-            ActiveAndroid.beginTransaction();
-            try {
-                for (int i = 0; i < movies.length; i++) {
-                    Movie movie = movies[i];
-                    movie.save();
-                }
-                ActiveAndroid.setTransactionSuccessful();
-            }
-            finally {
-                ActiveAndroid.endTransaction();
-            }
+            appSettings.saveMovies(movies);
             moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), Arrays.asList(movies));
             mRecyclerView.setAdapter(moviesRecyclerAdapter);
         }catch (ClassCastException e){

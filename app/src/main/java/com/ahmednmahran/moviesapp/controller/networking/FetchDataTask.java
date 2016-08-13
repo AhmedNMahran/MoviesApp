@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
+import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,11 +1,9 @@
-package com.ahmednmahran.moviesapp.controller.listeners;
+package com.ahmednmahran.moviesapp.controller.retriever;
 
 
-import com.activeandroid.query.Select;
-import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
+import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
 import com.ahmednmahran.moviesapp.controller.networking.FetchDataTask;
 import com.ahmednmahran.moviesapp.controller.networking.ParseDataTask;
-import com.ahmednmahran.moviesapp.model.Movie;
 
 /**
  * Created by Ahmed Nabil on 27/07/2016.
@@ -16,7 +14,7 @@ import com.ahmednmahran.moviesapp.model.Movie;
 
 public class DataRetriever implements DataRetrieveListener {
     private static final String LOG_TAG = DataRetriever.class.getSimpleName();
-    private DataRetrieveListener dataRetrieveListener;
+    protected DataRetrieveListener dataRetrieveListener;
     private FetchDataTask fetchDataTask;
     private ParseDataTask parseDataTask;
 
@@ -24,25 +22,6 @@ public class DataRetriever implements DataRetrieveListener {
         this.dataRetrieveListener = dataRetrieveListener;
     }
 
-    /**
-     *
-     * @param id finds in DB by this id and notifies retrieve listener when finished
-     * @return {@link DataRetriever}
-     */
-    public DataRetriever retrieveById(int id){
-        Movie movie = new Select()
-                .from(Movie.class)
-                .where("movie_id = ?", id)
-                .executeSingle();
-        if(dataRetrieveListener != null){
-            if(movie != null)
-                dataRetrieveListener.onDataRetrieved(movie);
-            else{
-                dataRetrieveListener.onRetrieveFailed();
-            }
-        }
-        return this;
-    }
     public DataRetriever retrieve(String url, final Class<?> classType){
         fetchDataTask = new FetchDataTask(new DataRetrieveListener() {
             @Override
@@ -77,5 +56,9 @@ public class DataRetriever implements DataRetrieveListener {
     public void onRetrieveFailed() {
         if(dataRetrieveListener != null)
             dataRetrieveListener.onRetrieveFailed();
+    }
+
+    public void setRetrieveListener(DataRetrieveListener retrieveListener) {
+        this.dataRetrieveListener = retrieveListener;
     }
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.ahmednmahran.moviesapp.R;
-import com.ahmednmahran.moviesapp.controller.listeners.InflateListener;
+import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
 
 /**
  * Created by Ahmed Nabil on 12/08/2016.

@@ -65,6 +65,7 @@ public class Movie extends Model{
     @Column(name ="vote_average")
     private double vote_average;
 
+    @Column(name ="favourite")
     @Expose
     private boolean favourite;
     public Movie() {

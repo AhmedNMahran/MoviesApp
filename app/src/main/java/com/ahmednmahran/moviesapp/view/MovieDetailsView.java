@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ahmednmahran.moviesapp.R;
-import com.ahmednmahran.moviesapp.controller.listeners.InflateListener;
+import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
 import com.ahmednmahran.moviesapp.model.Movie;
 
 /**

@@ -3,6 +3,7 @@ package com.ahmednmahran.moviesapp.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.activeandroid.ActiveAndroid;
 import com.ahmednmahran.moviesapp.R;
 
 /**
@@ -50,5 +51,23 @@ public class AppSettings {
 
     public String getRequestUrl() {
         return mContext.getString(R.string.base_url)+getRequestType()+mContext.getString(R.string.api_key_param)+"="+mContext.getString(R.string.api_key);
+    }
+
+    /**
+     * save these movies to be accessible locally
+     * @param movies
+     */
+    public void saveMovies(Movie[] movies) {
+        ActiveAndroid.beginTransaction();
+        try {
+            for (int i = 0; i < movies.length; i++) {
+                Movie movie = movies[i];
+                movie.save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+        }
+        finally {
+            ActiveAndroid.endTransaction();
+        }
     }
 }

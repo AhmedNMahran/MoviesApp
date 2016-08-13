@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
-import com.ahmednmahran.moviesapp.controller.DataRetrieveListener;
-import com.ahmednmahran.moviesapp.controller.listeners.DataRetriever;
-import com.ahmednmahran.moviesapp.controller.listeners.InflateListener;
+import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
+import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
+import com.ahmednmahran.moviesapp.controller.retriever.MovieDataRetriever;
 import com.ahmednmahran.moviesapp.model.Movie;
 import com.ahmednmahran.moviesapp.view.MovieDetailsView;
 
@@ -33,7 +33,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         movieView = new MovieDetailsView(getContext(), new InflateListener() {
             @Override
             public void onInflated(View view) {
-                new DataRetriever(DetailsFragment.this).retrieveById(getActivity().getIntent().getIntExtra(getString(R.string.extra_id),0));
+                new MovieDataRetriever(DetailsFragment.this).retrieveWhere(getString(R.string.movie_id_key),getActivity().getIntent().getIntExtra(getString(R.string.extra_id),0)+"",true);
             }
 
             @Override
