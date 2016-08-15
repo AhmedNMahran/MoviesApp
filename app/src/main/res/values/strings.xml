@@ -3,7 +3,6 @@
     <string name="action_favorite">Favorite</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="thumb_inflate_failed">Failed to inflate movie thumbnail view</string>
-    <string name="api_key">YOUR_KEY_HERE</string>
     <string name="api_key_param">api_key</string>
     <string name="base_url">http://api.themoviedb.org/3/movie</string>
     <string name="popular">/popular?</string>

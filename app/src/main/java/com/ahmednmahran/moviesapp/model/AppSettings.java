@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.activeandroid.ActiveAndroid;
+import com.ahmednmahran.moviesapp.BuildConfig;
 import com.ahmednmahran.moviesapp.R;
 
 /**
@@ -55,15 +56,15 @@ public class AppSettings {
      */
     public String getRequestUrl() {
 
-        return mContext.getString(R.string.base_url)+getRequestType()+mContext.getString(R.string.api_key_param)+"="+mContext.getString(R.string.api_key);
+        return mContext.getString(R.string.base_url)+getRequestType()+mContext.getString(R.string.api_key_param)+"="+BuildConfig.API_KEY;
     }
 
     public String getMovieTrailersUrl(int movieId){
-        return mContext.getString(R.string.base_url)+"/"+movieId+mContext.getString(R.string.trailers_path)+mContext.getString(R.string.api_key_param)+"="+mContext.getString(R.string.api_key);
+        return mContext.getString(R.string.base_url)+"/"+movieId+mContext.getString(R.string.trailers_path)+mContext.getString(R.string.api_key_param)+"="+ BuildConfig.API_KEY;
     }
 
     public String getMovieReviewsUrl(int movieId){
-        return mContext.getString(R.string.base_url)+"/"+movieId+mContext.getString(R.string.reviews_path)+mContext.getString(R.string.api_key_param)+"="+mContext.getString(R.string.api_key);
+        return mContext.getString(R.string.base_url)+"/"+movieId+mContext.getString(R.string.reviews_path)+mContext.getString(R.string.api_key_param)+"="+BuildConfig.API_KEY;
     }
     /**
      * save these movies to be accessible locally
