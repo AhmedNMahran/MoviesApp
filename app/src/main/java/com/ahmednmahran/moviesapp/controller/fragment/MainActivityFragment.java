@@ -44,6 +44,8 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     private AppSettings appSettings;
     private MovieDataRetriever dataRetriever;
     private ProgressBar progressBar;
+    private MenuItem lastCheckedItem;
+
     public MainActivityFragment() {
     }
 
@@ -76,6 +78,13 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu,inflater);
+        if(appSettings.getRequestType().equals(getString(R.string.find_fav)))
+            lastCheckedItem = menu.findItem(R.id.action_favorite).setChecked(true);
+        else if(appSettings.getRequestType().equals(getString(R.string.popular)))
+            lastCheckedItem = menu.findItem(R.id.action_popular).setChecked(true);
+        else if(appSettings.getRequestType().equals(getString(R.string.top_rated)))
+            lastCheckedItem = menu.findItem(R.id.action_top).setChecked(true);
+
     }
 
     @Override
@@ -83,14 +92,18 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         switch (item.getItemId()){
             case R.id.action_popular:
                 getMoviesList(getString(R.string.popular),true);
-            break;
+                break;
             case R.id.action_top:
                 getMoviesList(getString(R.string.top_rated),true);
-            break;
+                break;
             case R.id.action_favorite:
                 getMoviesFavourites();
                 break;
         }
+        if(lastCheckedItem.getItemId() != item.getItemId())
+            lastCheckedItem.setChecked(false);
+        item.setChecked(true);
+        lastCheckedItem = item;
         return true;
     }
 
@@ -124,6 +137,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         else{
             appSettings.setRequestType(requestType);
             if(dataRetriever != null) {
+                dataRetriever.setRetrieveListener(this);
                 dataRetriever.cancelRequestIfRunning();
                 if(online)
                     dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class,true);

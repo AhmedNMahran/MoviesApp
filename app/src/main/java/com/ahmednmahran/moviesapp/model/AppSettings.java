@@ -82,4 +82,18 @@ public class AppSettings {
             ActiveAndroid.endTransaction();
         }
     }
+
+    public void saveTrailers(Trailer[] trailers) {
+        ActiveAndroid.beginTransaction();
+        try {
+            for (int i = 0; i < trailers.length; i++) {
+                Trailer trailer = trailers[i];
+                trailer.save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+        }
+        finally {
+            ActiveAndroid.endTransaction();
+        }
+    }
 }
