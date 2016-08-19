@@ -3,8 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ahmednmahran.moviesapp.controller.activity.DetailsActivity">
     <item
-        android:id="@+id/action_favorite"
+        android:id="@+id/action_trailer"
         android:orderInCategory="100"
-        android:title="@string/action_favorite"
+        android:title="@string/action_trailer"
+        android:checkable="true"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_review"
+        android:orderInCategory="110"
+        android:title="@string/action_review"
+        android:checkable="true"
         app:showAsAction="never" />
 </menu>

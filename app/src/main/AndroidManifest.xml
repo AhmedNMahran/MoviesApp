@@ -18,7 +18,7 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.ahmednmahran.moviesapp.model.Movie, com.ahmednmahran.moviesapp.model.Trailer" />
+            android:value="com.ahmednmahran.moviesapp.model.Movie, com.ahmednmahran.moviesapp.model.Trailer, com.ahmednmahran.moviesapp.model.Review" />
         <activity
             android:name=".controller.activity.MainActivity"
             android:label="@string/app_name"

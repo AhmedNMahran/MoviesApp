@@ -23,11 +23,11 @@ import java.util.List;
  * Mobile 2 : +2 011 44 333 595
  *
  */
-public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecyclerAdapter.ViewHolder>{
+public class TrailersRecyclerAdapter extends RecyclerView.Adapter<TrailersRecyclerAdapter.ViewHolder>{
     private Context mContext;
     private List<Trailer> trailers;
 
-    public DetailsRecyclerAdapter(Context context, List<Trailer> trailers) {
+    public TrailersRecyclerAdapter(Context context, List<Trailer> trailers) {
         this.trailers = trailers;
         this.mContext = context;
     }

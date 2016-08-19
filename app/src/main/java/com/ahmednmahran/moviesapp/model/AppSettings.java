@@ -97,4 +97,26 @@ public class AppSettings {
             ActiveAndroid.endTransaction();
         }
     }
+
+    public void saveReviews(Review[] reviews) {
+        ActiveAndroid.beginTransaction();
+        try {
+            for (int i = 0; i < reviews.length; i++) {
+                Review review= reviews[i];
+                review.save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+        }
+        finally {
+            ActiveAndroid.endTransaction();
+        }
+    }
+
+    public void saveDetailRequestType(String requestType){
+        editor.putString(mContext.getString(R.string.detail_request_type),requestType).commit();
+    }
+
+    public String getDetailRequestType() {
+        return settings.getString(mContext.getString(R.string.detail_request_type) ,mContext.getString(R.string.action_trailer));
+    }
 }

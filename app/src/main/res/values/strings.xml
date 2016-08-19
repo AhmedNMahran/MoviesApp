@@ -20,6 +20,9 @@
     <string name="movie_id_key">movie_id</string>
     <string name="reviews_path">/reviews?</string>
     <string name="trailers_path">/videos?</string>
+    <string name="action_trailer">Trailers</string>
+    <string name="action_review">Reviews</string>
+    <string name="detail_request_type">detailRequest</string>
 
 
 </resources>
