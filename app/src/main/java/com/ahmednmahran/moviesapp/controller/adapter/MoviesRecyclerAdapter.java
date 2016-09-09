@@ -1,7 +1,9 @@
 package com.ahmednmahran.moviesapp.controller.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.activity.DetailsActivity;
+import com.ahmednmahran.moviesapp.controller.fragment.DetailsFragment;
 import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
 import com.ahmednmahran.moviesapp.model.Movie;
 import com.ahmednmahran.moviesapp.view.MovieThumbnailView;
@@ -52,11 +55,18 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            mContext.startActivity(new Intent(mContext, DetailsActivity.class).
-                                    putExtra(mContext.getString(R.string.extra_id)
-                                            , movie.getMovieId())
-                                    .putExtra(mContext.getString(R.string.extra_title)
-                                            , movie.getOriginalTitle()));
+                            if(mContext.getResources().getBoolean(R.bool.isTablet)){
+                                DetailsFragment detailsFragment = (DetailsFragment) ((AppCompatActivity)mContext).getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
+                                detailsFragment.setMovie(movie);
+                                detailsFragment.retrieveMovie();
+                            }
+                            else{
+                                mContext.startActivity(new Intent(mContext, DetailsActivity.class).
+                                        putExtra(mContext.getString(R.string.extra_id)
+                                                , movie.getMovieId())
+                                        .putExtra(mContext.getString(R.string.extra_title)
+                                                , movie.getOriginalTitle()));
+                            }
                         }
                     });
                 }

@@ -61,4 +61,3 @@ public class Review extends Model{
         this.url = url;
     }
 }
-git

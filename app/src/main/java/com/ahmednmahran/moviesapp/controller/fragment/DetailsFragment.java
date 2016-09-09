@@ -57,6 +57,15 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         setHasOptionsMenu(true);
     }
 
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+        if(movie != null)
+            this.movieId = movie.getMovieId();
+        if(this.movieId == 0){
+            this.movieId = getDefaultMovieId();
+        }
+    }
+
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,16 +74,12 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         movieView = new MovieDetailsView(getContext(), new InflateListener() {
             @Override
             public void onInflated(View view) {
-                movieId = getActivity().getIntent().getIntExtra(getString(R.string.extra_id), 0);
-                new MovieDataRetriever(DetailsFragment.this)
-                        //get movie details
-                        .retrieveWhere(getString(R.string.movie_id_key), movieId +"",true);
-                String detailRequestType = AppSettings.getAppPreference(getContext().getApplicationContext()).getDetailRequestType();
-                if(detailRequestType.equalsIgnoreCase(getString(R.string.action_trailer)))
-                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId),true,TrailerResponse.class);
-                else
-                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId),true,ReviewResponse.class);
+                if(!getResources().getBoolean(R.bool.isTablet)) { // handheld device
+                    movieId = getActivity().getIntent().getIntExtra(getString(R.string.extra_id), 0);
+                    retrieveMovie();
+                }
             }
+
 
             @Override
             public void onInflateFailed(View view) {
@@ -92,6 +97,21 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         trailersRecyclerView.setLayoutManager(mLayoutManager);
         rootContainer.addView(trailersRecyclerView);
         return rootView;
+    }
+
+    private int getDefaultMovieId() {
+        return AppSettings.getAppPreference(getContext().getApplicationContext()).getDefaultMovieId();
+    }
+
+    public void retrieveMovie() {
+        new MovieDataRetriever(DetailsFragment.this)
+                //get movie details
+                .retrieveWhere(getString(R.string.movie_id_key), movieId +"",true);
+        String detailRequestType = AppSettings.getAppPreference(getContext().getApplicationContext()).getDetailRequestType();
+        if(detailRequestType.equalsIgnoreCase(getString(R.string.action_trailer)))
+            getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId),true,TrailerResponse.class);
+        else
+            getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId),true,ReviewResponse.class);
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

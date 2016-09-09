@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Select;
 import com.ahmednmahran.moviesapp.BuildConfig;
 import com.ahmednmahran.moviesapp.R;
 
@@ -71,6 +72,7 @@ public class AppSettings {
      * @param movies
      */
     public void saveMovies(Movie[] movies) {
+        setDefaultMovieId(movies[0].getMovieId());
         ActiveAndroid.beginTransaction();
         try {
             for (int i = 0; i < movies.length; i++) {
@@ -118,5 +120,12 @@ public class AppSettings {
 
     public String getDetailRequestType() {
         return settings.getString(mContext.getString(R.string.detail_request_type) ,mContext.getString(R.string.action_trailer));
+    }
+
+    public void setDefaultMovieId(int movieId){
+        editor.putInt("defaultMovieId",movieId).commit();
+    }
+    public int getDefaultMovieId() {
+        return settings.getInt("defaultMovieId",0);
     }
 }

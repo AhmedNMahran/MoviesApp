@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.ahmednmahran.moviesapp.R;
+import com.ahmednmahran.moviesapp.controller.fragment.DetailsFragment;
 
 /**
  * Created by Ahmed Nabil on 07/08/2016.
