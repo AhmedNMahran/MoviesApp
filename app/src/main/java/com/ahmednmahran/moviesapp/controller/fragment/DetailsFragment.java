@@ -68,15 +68,20 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         appSettings = AppSettings.getAppPreference(getContext().getApplicationContext());
         movieView = new MovieDetailsView(getContext(), new InflateListener() {
             @Override
             public void onInflated(View view) {
-                if(!getResources().getBoolean(R.bool.isTablet)) { // handheld device
-                    movieId = getActivity().getIntent().getIntExtra(getString(R.string.extra_id), 0);
+                if(savedInstanceState != null){
+                    movieId = savedInstanceState.getInt("movie_id");
                     retrieveMovie();
+                }else{
+                    if(!getResources().getBoolean(R.bool.isTablet)) { // handheld device
+                        movieId = getActivity().getIntent().getIntExtra(getString(R.string.extra_id), 0);
+                        retrieveMovie();
+                    }
                 }
             }
 
@@ -224,5 +229,11 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
 
     public interface OnFavoriteChangeListener{
         void onFavoriteChanged(boolean currentState, boolean shouldShowMessage);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt("movie_id",movieId);
+        super.onSaveInstanceState(outState);
     }
 }

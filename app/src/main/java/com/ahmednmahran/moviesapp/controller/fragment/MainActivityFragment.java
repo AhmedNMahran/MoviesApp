@@ -3,6 +3,7 @@ package com.ahmednmahran.moviesapp.controller.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     private MovieDataRetriever dataRetriever;
     private ProgressBar progressBar;
     private MenuItem lastCheckedItem;
+    private boolean shownDefaultMovie;
 
     public MainActivityFragment() {
     }
@@ -60,6 +62,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        shownDefaultMovie = savedInstanceState!=null;
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
@@ -155,6 +158,14 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
             appSettings.saveMovies(movies);
             moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), Arrays.asList(movies));
             mRecyclerView.setAdapter(moviesRecyclerAdapter);
+            if(getResources().getBoolean(R.bool.isTablet)){
+                if(!shownDefaultMovie){
+                    appSettings.setDefaultMovieId(movies[0].getMovieId());
+                    DetailsFragment detailsFragment = (DetailsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
+                    detailsFragment.setMovie(movies[0]);
+                    detailsFragment.retrieveMovie();
+                }
+            }
         }catch (ClassCastException e){
             Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
         }
@@ -163,5 +174,10 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     @Override
     public void onRetrieveFailed() {
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }
