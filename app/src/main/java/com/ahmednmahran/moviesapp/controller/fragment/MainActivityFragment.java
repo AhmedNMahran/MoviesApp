@@ -1,6 +1,7 @@
 package com.ahmednmahran.moviesapp.controller.fragment;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -110,7 +111,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         return true;
     }
 
-    private void getMoviesFavourites() {
+    public void getMoviesFavourites() {
         appSettings.setRequestType(getString(R.string.find_fav));
         dataRetriever.setRetrieveListener(new DataRetrieveListener() {
             @Override
@@ -118,9 +119,32 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                 progressBar.setVisibility(View.INVISIBLE);
 
                 try{
-                    ArrayList<Movie> movies = (ArrayList<Movie>) data;
+                    final ArrayList<Movie> movies = (ArrayList<Movie>) data;
                     moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), movies);
                     mRecyclerView.setAdapter(moviesRecyclerAdapter);
+                    if(getResources().getBoolean(R.bool.isTablet)){
+                        if(!shownDefaultMovie){
+                            appSettings.setDefaultMovieId(movies.get(0).getMovieId());
+                            new CountDownTimer(3000, 1000) { // try for 3 seconds to get the details fragment
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    if(getActivity() != null){
+                                        DetailsFragment detailsFragment = (DetailsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
+                                        if(detailsFragment != null){
+                                            detailsFragment.setMovie(movies.get(0));
+                                            detailsFragment.retrieveMovie();
+                                            cancel();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFinish() {
+
+                                }
+                            }.start();
+                        }
+                    }
                 }catch (ClassCastException e){
                     Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
                 }
