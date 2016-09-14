@@ -65,9 +65,6 @@ public class MainActivity extends AppCompatActivity implements DetailsFragment.O
     @Override
     public void onFavoriteChanged(boolean favorite, boolean shouldShowMessage) {
         // refresh and update the list on toggle favourite
-//        if(AppSettings.getAppPreference(getApplicationContext()).getRequestType().equals(getString(R.string.find_fav))) {
-//            ((MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment)).getMoviesFavourites();
-//        }
         if(favorite){
             favoriteFab.setImageResource(R.drawable.ic_favorite_white_24dp);
             if(shouldShowMessage)

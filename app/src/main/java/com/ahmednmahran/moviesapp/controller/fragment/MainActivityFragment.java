@@ -132,6 +132,15 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                                 if(detailsFragment != null){
                                     detailsFragment.setMovie(movies.get(0));
                                     detailsFragment.retrieveMovie();
+                                }else{
+                                    rootView.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            DetailsFragment detailsFragment = (DetailsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
+                                            detailsFragment.setMovie(movies.get(0));
+                                            detailsFragment.retrieveMovie();
+                                        }
+                                    },1000);
                                 }
                             }
                         }
