@@ -1,6 +1,7 @@
 package com.ahmednmahran.moviesapp.controller.activity;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,10 +22,10 @@ import com.ahmednmahran.moviesapp.model.AppSettings;
  * An Activity used to view the main list of movies, using {@link com.ahmednmahran.moviesapp.controller.fragment.MainActivityFragment}
  *
  */
-public class MainActivity extends AppCompatActivity implements DetailsFragment.OnFavoriteChangeListener{
+public class MainActivity extends AppCompatActivity{
 
     private DetailsFragment detailsFragment;
-    private FloatingActionButton favoriteFab;
+//    private FloatingActionButton favoriteFab;
     private AppSettings appPreference;
 
     @Override
@@ -36,15 +37,6 @@ public class MainActivity extends AppCompatActivity implements DetailsFragment.O
         appPreference = AppSettings.getAppPreference(getApplicationContext());
         if(getResources().getBoolean(R.bool.isTablet)){
             detailsFragment = ((DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.detailsFragment));
-            favoriteFab = (FloatingActionButton) findViewById(R.id.fab);
-            favoriteFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    detailsFragment.toggleFavorite();
-
-                }
-            });
-            detailsFragment.setOnFavoriteChangeListener(this);
             RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
@@ -60,21 +52,5 @@ public class MainActivity extends AppCompatActivity implements DetailsFragment.O
             });
         }
 
-    }
-
-    @Override
-    public void onFavoriteChanged(boolean favorite, boolean shouldShowMessage) {
-        // refresh and update the list on toggle favourite
-        if(favorite){
-            favoriteFab.setImageResource(R.drawable.ic_favorite_white_24dp);
-            if(shouldShowMessage)
-                Snackbar.make(favoriteFab, "Movie added to favorites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-        }else{
-            favoriteFab.setImageResource(R.drawable.ic_favorite_border_white_24dp);
-            if(shouldShowMessage)
-                Snackbar.make(favoriteFab, "Movie removed from favorites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-        }
     }
 }

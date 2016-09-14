@@ -2,6 +2,8 @@ package com.ahmednmahran.moviesapp.controller.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,6 +52,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     private TextView txtListTitle;
     private ProgressBar progressBar;
     private View rootView;
+    private FloatingActionButton fab;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -74,6 +77,15 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_details, container, false);
+        if(getResources().getBoolean(R.bool.isTablet)){
+            fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleFavorite();
+                }
+            });
+        }
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         appSettings = AppSettings.getAppPreference(getContext().getApplicationContext());
         movieView = new MovieDetailsView(getContext(), new InflateListener() {
@@ -200,6 +212,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     public void onDataRetrieved(Object data) {
         try{
             movie = ((Movie)data);
+            fab.setImageResource(movie.isFavourite()?R.drawable.ic_favorite_white_24dp:R.drawable.ic_favorite_border_white_24dp);
             movieView.populateUiData(movie);
             if(onFavoriteChangeListener != null){
                 onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(), false);
@@ -230,9 +243,19 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         if(movie != null){
             if(movie.isFavourite()) {
                 movie.setFavourite(false);
+                if(getResources().getBoolean(R.bool.isTablet)){
+                    fab.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+                    Snackbar.make(fab, "Movie added to favorites", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
             }
             else{
                 movie.setFavourite(true);
+                if(getResources().getBoolean(R.bool.isTablet)){
+                    fab.setImageResource(R.drawable.ic_favorite_white_24dp);
+                    Snackbar.make(fab, "Movie removed from favorites", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
             }
             movie.save(); //update the movie in database
             if(onFavoriteChangeListener != null){
