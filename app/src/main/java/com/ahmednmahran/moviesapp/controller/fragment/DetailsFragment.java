@@ -12,10 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
+import com.ahmednmahran.moviesapp.controller.activity.MainActivity;
 import com.ahmednmahran.moviesapp.controller.adapter.ReviewsRecyclerAdapter;
 import com.ahmednmahran.moviesapp.controller.adapter.TrailersRecyclerAdapter;
 import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
@@ -46,6 +48,8 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     private MenuItem lastCheckedItem;
     private MovieDataRetriever movieDataRetriever;
     private TextView txtListTitle;
+    private ProgressBar progressBar;
+    private View rootView;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -69,7 +73,8 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
+        rootView = inflater.inflate(R.layout.fragment_details, container, false);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         appSettings = AppSettings.getAppPreference(getContext().getApplicationContext());
         movieView = new MovieDetailsView(getContext(), new InflateListener() {
             @Override
@@ -109,6 +114,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     }
 
     public void retrieveMovie() {
+        progressBar.setVisibility(View.VISIBLE);
         new MovieDataRetriever(DetailsFragment.this)
                 //get movie details
                 .retrieveWhere(getString(R.string.movie_id_key), movieId +"",true);
@@ -120,35 +126,39 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_details, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-        if(appSettings.getDetailRequestType().equals(getString(R.string.action_review)))
-            lastCheckedItem = menu.findItem(R.id.action_review).setChecked(true);
-        else if(appSettings.getDetailRequestType().equals(getString(R.string.action_trailer)))
-            lastCheckedItem = menu.findItem(R.id.action_trailer).setChecked(true);
-        else
-            lastCheckedItem = menu.findItem(R.id.action_trailer).setChecked(true);
-
+        if(!getResources().getBoolean(R.bool.isTablet))
+        {
+            inflater.inflate(R.menu.menu_details, menu);
+            super.onCreateOptionsMenu(menu,inflater);
+            if(appSettings.getDetailRequestType().equals(getString(R.string.action_review)))
+                lastCheckedItem = menu.findItem(R.id.action_review).setChecked(true);
+            else if(appSettings.getDetailRequestType().equals(getString(R.string.action_trailer)))
+                lastCheckedItem = menu.findItem(R.id.action_trailer).setChecked(true);
+            else
+                lastCheckedItem = menu.findItem(R.id.action_trailer).setChecked(true);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_trailer:
-                AppSettings.getAppPreference(getContext().getApplicationContext()).saveDetailRequestType(getString(R.string.action_trailer));
-                getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId),true,TrailerResponse.class);
-                break;
-            case R.id.action_review:
-                AppSettings.getAppPreference(getContext().getApplicationContext()).saveDetailRequestType(getString(R.string.action_review));
-                getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId),true,ReviewResponse.class);
-                break;
-            case android.R.id.home:
-                getActivity().finish();
+        if(!getResources().getBoolean(R.bool.isTablet)){
+            switch (item.getItemId()){
+                case R.id.action_trailer:
+                    AppSettings.getAppPreference(getContext().getApplicationContext()).saveDetailRequestType(getString(R.string.action_trailer));
+                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId),true,TrailerResponse.class);
+                    break;
+                case R.id.action_review:
+                    AppSettings.getAppPreference(getContext().getApplicationContext()).saveDetailRequestType(getString(R.string.action_review));
+                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId),true,ReviewResponse.class);
+                    break;
+                case android.R.id.home:
+                    getActivity().finish();
+            }
+            if(lastCheckedItem.getItemId() != item.getItemId())
+                lastCheckedItem.setChecked(false);
+            item.setChecked(true);
+            lastCheckedItem = item;
         }
-        if(lastCheckedItem.getItemId() != item.getItemId())
-            lastCheckedItem.setChecked(false);
-        item.setChecked(true);
-        lastCheckedItem = item;
         return true;
     }
 
@@ -160,6 +170,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         movieDataRetriever = new MovieDataRetriever(new DataRetrieveListener() {
             @Override
             public void onDataRetrieved(Object data) {
+                progressBar.setVisibility(View.INVISIBLE);
                 if(data instanceof TrailerResponse)
                 {
                     Trailer[] trailers = ((TrailerResponse) data).getResults();
@@ -176,6 +187,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
 
             @Override
             public void onRetrieveFailed() {
+                progressBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(getContext(), "Failed to fetch Trailers!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -209,8 +221,10 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
      */
     public void setOnFavoriteChangeListener(OnFavoriteChangeListener listener){
         this.onFavoriteChangeListener = listener;
-        if(movie != null)
-            onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(),false);
+        if(!getResources().getBoolean(R.bool.isTablet)){
+            if(movie != null)
+                onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(),false);
+        }
     }
     public void toggleFavorite() {
         if(movie != null){
@@ -220,9 +234,17 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
             else{
                 movie.setFavourite(true);
             }
-            movie.save();
+            movie.save(); //update the movie in database
             if(onFavoriteChangeListener != null){
                 onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(), true);
+            }
+            if(getResources().getBoolean(R.bool.isTablet)){
+                if(AppSettings.getAppPreference(getActivity().getApplicationContext()).getRequestType().equals(getString(R.string.find_fav)))
+                {
+
+                    MainActivityFragment mainActivityFragment = (MainActivityFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment);
+                    mainActivityFragment.getMoviesFavourites();
+                }
             }
         }
     }

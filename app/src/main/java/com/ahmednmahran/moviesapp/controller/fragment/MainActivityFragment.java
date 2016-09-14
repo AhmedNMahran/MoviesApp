@@ -127,18 +127,13 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                     if(getResources().getBoolean(R.bool.isTablet)){
                         if(!shownDefaultMovie || calledFromMenu){
                             appSettings.setDefaultMovieId(movies.get(0).getMovieId());
-                            rootView.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(getActivity() != null){
-                                        DetailsFragment detailsFragment = (DetailsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
-                                        if(detailsFragment != null){
-                                            detailsFragment.setMovie(movies.get(0));
-                                            detailsFragment.retrieveMovie();
-                                        }
-                                    }
+                            if(getActivity() != null){
+                                DetailsFragment detailsFragment = (DetailsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
+                                if(detailsFragment != null){
+                                    detailsFragment.setMovie(movies.get(0));
+                                    detailsFragment.retrieveMovie();
                                 }
-                            }, 2000);
+                            }
                         }
                     }
                 }catch (ClassCastException e){
