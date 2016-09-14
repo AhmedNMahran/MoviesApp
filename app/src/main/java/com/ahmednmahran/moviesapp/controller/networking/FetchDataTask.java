@@ -50,6 +50,7 @@ public class FetchDataTask extends AsyncTask<String,Void,Object> {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setInstanceFollowRedirects(true);
+            urlConnection.setConnectTimeout(30000);
             urlConnection.connect();
 
             // Read the input stream into a String
