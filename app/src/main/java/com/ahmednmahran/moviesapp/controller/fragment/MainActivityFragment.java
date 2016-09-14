@@ -1,10 +1,8 @@
 package com.ahmednmahran.moviesapp.controller.fragment;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,6 +47,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     private MenuItem lastCheckedItem;
     private boolean shownDefaultMovie;
     private boolean calledFromMenu;
+    private View rootView;
 
     public MainActivityFragment() {
     }
@@ -63,7 +62,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
@@ -128,24 +127,18 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                     if(getResources().getBoolean(R.bool.isTablet)){
                         if(!shownDefaultMovie || calledFromMenu){
                             appSettings.setDefaultMovieId(movies.get(0).getMovieId());
-                            new CountDownTimer(3000, 1000) { // try for 3 seconds to get the details fragment
+                            rootView.postDelayed(new Runnable() {
                                 @Override
-                                public void onTick(long millisUntilFinished) {
+                                public void run() {
                                     if(getActivity() != null){
                                         DetailsFragment detailsFragment = (DetailsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
                                         if(detailsFragment != null){
                                             detailsFragment.setMovie(movies.get(0));
                                             detailsFragment.retrieveMovie();
-                                            cancel();
                                         }
                                     }
                                 }
-
-                                @Override
-                                public void onFinish() {
-
-                                }
-                            }.start();
+                            }, 2000);
                         }
                     }
                 }catch (ClassCastException e){
