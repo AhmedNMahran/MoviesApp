@@ -48,6 +48,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     private ProgressBar progressBar;
     private MenuItem lastCheckedItem;
     private boolean shownDefaultMovie;
+    private boolean calledFromMenu;
 
     public MainActivityFragment() {
     }
@@ -63,7 +64,6 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        shownDefaultMovie = savedInstanceState!=null;
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
@@ -73,7 +73,9 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         mLayoutManager = new GridLayoutManager(getContext(),2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         appSettings = AppSettings.getAppPreference(getContext().getApplicationContext());
+        shownDefaultMovie = savedInstanceState!=null && savedInstanceState.getString("lastRequest").equals(appSettings.getRequestType());
         dataRetriever = new MovieDataRetriever(this);
+        calledFromMenu = false;
         getMoviesList(appSettings.getRequestType(),true);
         return rootView;
     }
@@ -93,6 +95,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        calledFromMenu = true;
         switch (item.getItemId()){
             case R.id.action_popular:
                 getMoviesList(getString(R.string.popular),true);
@@ -123,7 +126,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                     moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), movies);
                     mRecyclerView.setAdapter(moviesRecyclerAdapter);
                     if(getResources().getBoolean(R.bool.isTablet)){
-                        if(!shownDefaultMovie){
+                        if(!shownDefaultMovie || calledFromMenu){
                             appSettings.setDefaultMovieId(movies.get(0).getMovieId());
                             new CountDownTimer(3000, 1000) { // try for 3 seconds to get the details fragment
                                 @Override
@@ -183,7 +186,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
             moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), Arrays.asList(movies));
             mRecyclerView.setAdapter(moviesRecyclerAdapter);
             if(getResources().getBoolean(R.bool.isTablet)){
-                if(!shownDefaultMovie){
+                if(!shownDefaultMovie || calledFromMenu){
                     appSettings.setDefaultMovieId(movies[0].getMovieId());
                     DetailsFragment detailsFragment = (DetailsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
                     detailsFragment.setMovie(movies[0]);
@@ -202,6 +205,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        outState.putString("lastRequest",appSettings.getRequestType());
         super.onSaveInstanceState(outState);
     }
 }

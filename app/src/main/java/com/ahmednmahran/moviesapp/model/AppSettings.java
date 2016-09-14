@@ -128,4 +128,5 @@ public class AppSettings {
     public int getDefaultMovieId() {
         return settings.getInt("defaultMovieId",0);
     }
+
 }
