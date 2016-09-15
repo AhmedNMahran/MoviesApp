@@ -205,4 +205,15 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         outState.putString("lastRequest",appSettings.getRequestType());
         super.onSaveInstanceState(outState);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!getResources().getBoolean(R.bool.isTablet))
+            if(appSettings !=null) {
+                String requestType = appSettings.getRequestType();
+                if(requestType.equals(getString(R.string.find_fav))) // update favourites list
+                    getMoviesList(requestType,true);
+            }
+    }
 }
