@@ -226,8 +226,10 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         try{
             movie = ((Movie)data);
             if(getResources().getBoolean(R.bool.isTablet))
+            {
                 fab.setVisibility(View.VISIBLE);
                 fab.setImageResource(movie.isFavourite()?R.drawable.ic_favorite_white_24dp:R.drawable.ic_favorite_border_white_24dp);
+            }
             movieView.populateUiData(movie);
             if(onFavoriteChangeListener != null){
                 onFavoriteChangeListener.onFavoriteChanged(movie.isFavourite(), false);
