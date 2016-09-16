@@ -11,7 +11,7 @@ import android.view.View;
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.fragment.DetailsFragment;
 
-public class DetailsActivity extends AppCompatActivity implements DetailsFragment.OnFavoriteChangeListener {
+public class DetailsActivity extends BaseActivity implements DetailsFragment.OnFavoriteChangeListener {
 
     private DetailsFragment detailsFragment;
     private FloatingActionButton favoriteFab;

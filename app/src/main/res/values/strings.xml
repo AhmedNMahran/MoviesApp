@@ -23,6 +23,8 @@
     <string name="action_trailer">Trailers</string>
     <string name="action_review">Reviews</string>
     <string name="detail_request_type">detailRequest</string>
+    <string name="no_connection">No Internet connection, trying to get offline data...</string>
+    <string name="fetch_failed">Failed to fetch Data!</string>
 
 
 </resources>

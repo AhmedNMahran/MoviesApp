@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
-import com.ahmednmahran.moviesapp.controller.activity.MainActivity;
+import com.ahmednmahran.moviesapp.controller.activity.BaseActivity;
 import com.ahmednmahran.moviesapp.controller.adapter.ReviewsRecyclerAdapter;
 import com.ahmednmahran.moviesapp.controller.adapter.TrailersRecyclerAdapter;
 import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
@@ -47,6 +47,9 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
     private LinearLayoutManager mLayoutManager;
     private AppSettings appSettings;
     private RecyclerView.Adapter mRecyclerAdapter;
+    /**
+     * use reference to the currently selected menu item to toggle menu checkboxes
+     */
     private MenuItem lastCheckedItem;
     private MovieDataRetriever movieDataRetriever;
     private TextView txtListTitle;
@@ -64,6 +67,10 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * sets the movie to be used for related data retrieval
+     * @param movie
+     */
     public void setMovie(Movie movie) {
         this.movie = movie;
         if(movie != null)
@@ -125,6 +132,9 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         return AppSettings.getAppPreference(getContext().getApplicationContext()).getDefaultMovieId();
     }
 
+    /**
+     * always gets the movie data from offline database using movieId
+     */
     public void retrieveMovie() {
         progressBar.setVisibility(View.VISIBLE);
         new MovieDataRetriever(DetailsFragment.this)
@@ -132,9 +142,9 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
                 .retrieveWhere(getString(R.string.movie_id_key), movieId +"",true);
         String detailRequestType = AppSettings.getAppPreference(getContext().getApplicationContext()).getDetailRequestType();
         if(detailRequestType.equalsIgnoreCase(getString(R.string.action_trailer)))
-            getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId),true,TrailerResponse.class);
+            getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId), TrailerResponse.class);
         else
-            getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId),true,ReviewResponse.class);
+            getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId), ReviewResponse.class);
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -157,11 +167,11 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
             switch (item.getItemId()){
                 case R.id.action_trailer:
                     AppSettings.getAppPreference(getContext().getApplicationContext()).saveDetailRequestType(getString(R.string.action_trailer));
-                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId),true,TrailerResponse.class);
+                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieTrailersUrl(movieId), TrailerResponse.class);
                     break;
                 case R.id.action_review:
                     AppSettings.getAppPreference(getContext().getApplicationContext()).saveDetailRequestType(getString(R.string.action_review));
-                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId),true,ReviewResponse.class);
+                    getList(AppSettings.getAppPreference(getContext().getApplicationContext()).getMovieReviewsUrl(movieId), ReviewResponse.class);
                     break;
                 case android.R.id.home:
                     getActivity().finish();
@@ -174,7 +184,10 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         return true;
     }
 
-    private void getList(String url, boolean online, Class<?> castClass) {
+    private void getList(String url, Class<?> castClass) {
+        if(!((BaseActivity)getActivity()).isNetworkAvailable()){
+            Toast.makeText(getActivity(), R.string.no_connection, Toast.LENGTH_LONG).show();
+        }
         if(txtListTitle != null)
             txtListTitle.setText(AppSettings.getAppPreference(getContext().getApplicationContext()).getDetailRequestType());
         if(movieDataRetriever != null)
@@ -200,7 +213,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
             @Override
             public void onRetrieveFailed() {
                 progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getContext(), "Failed to fetch Trailers!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Failed to fetch List!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -213,6 +226,7 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
         try{
             movie = ((Movie)data);
             if(getResources().getBoolean(R.bool.isTablet))
+                fab.setVisibility(View.VISIBLE);
                 fab.setImageResource(movie.isFavourite()?R.drawable.ic_favorite_white_24dp:R.drawable.ic_favorite_border_white_24dp);
             movieView.populateUiData(movie);
             if(onFavoriteChangeListener != null){
@@ -220,13 +234,14 @@ public class DetailsFragment extends Fragment implements DataRetrieveListener {
             }
 
         }catch (ClassCastException e){
-            Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.fetch_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onRetrieveFailed() {
-        Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.fetch_failed), Toast.LENGTH_SHORT).show();
+
     }
 
     /**

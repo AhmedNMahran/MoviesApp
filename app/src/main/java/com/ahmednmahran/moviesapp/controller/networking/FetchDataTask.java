@@ -50,7 +50,7 @@ public class FetchDataTask extends AsyncTask<String,Void,Object> {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setInstanceFollowRedirects(true);
-            urlConnection.setConnectTimeout(30000);
+            urlConnection.setConnectTimeout(15 * 1000);
             urlConnection.connect();
 
             // Read the input stream into a String
@@ -88,6 +88,7 @@ public class FetchDataTask extends AsyncTask<String,Void,Object> {
                     reader.close();
                 } catch (final IOException e) {
                     Log.e(LOG_TAG, "Error closing stream", e);
+                    return jsonStr;
                 }
             }
         }

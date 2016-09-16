@@ -2,6 +2,8 @@ package com.ahmednmahran.moviesapp.controller;
 
 
 import com.ahmednmahran.moviesapp.AppHelper;
+import com.zplesac.connectionbuddy.ConnectionBuddy;
+import com.zplesac.connectionbuddy.ConnectionBuddyConfiguration;
 
 /**
  * Created by Ahmed Nabil on 12/08/2016.
@@ -16,5 +18,7 @@ public class MoviesAppApplication  extends com.activeandroid.app.Application{
     public void onCreate() {
         super.onCreate();
         AppHelper.getInstance().init(this);
+        ConnectionBuddyConfiguration networkInspectorConfiguration = new ConnectionBuddyConfiguration.Builder(this).build();
+        ConnectionBuddy.getInstance().init(networkInspectorConfiguration);
     }
 }

@@ -13,6 +13,9 @@ import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.fragment.DetailsFragment;
 import com.ahmednmahran.moviesapp.controller.fragment.MainActivityFragment;
 import com.ahmednmahran.moviesapp.model.AppSettings;
+import com.zplesac.connectionbuddy.ConnectionBuddy;
+import com.zplesac.connectionbuddy.models.ConnectivityEvent;
+import com.zplesac.connectionbuddy.models.ConnectivityState;
 
 /**
  * Created by Ahmed Nabil on 07/08/2016.
@@ -22,7 +25,7 @@ import com.ahmednmahran.moviesapp.model.AppSettings;
  * An Activity used to view the main list of movies, using {@link com.ahmednmahran.moviesapp.controller.fragment.MainActivityFragment}
  *
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends BaseActivity{
 
     private DetailsFragment detailsFragment;
 //    private FloatingActionButton favoriteFab;

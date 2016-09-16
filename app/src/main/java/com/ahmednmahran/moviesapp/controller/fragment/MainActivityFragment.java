@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
+import com.ahmednmahran.moviesapp.controller.activity.BaseActivity;
 import com.ahmednmahran.moviesapp.controller.adapter.MoviesRecyclerAdapter;
 import com.ahmednmahran.moviesapp.controller.listener.DataRetrieveListener;
 import com.ahmednmahran.moviesapp.controller.retriever.MovieDataRetriever;
@@ -72,10 +73,10 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         mLayoutManager = new GridLayoutManager(getContext(),2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         appSettings = AppSettings.getAppPreference(getContext().getApplicationContext());
-        shownDefaultMovie = savedInstanceState!=null && savedInstanceState.getString("lastRequest").equals(appSettings.getRequestType());
+        shownDefaultMovie = savedInstanceState!=null && savedInstanceState.getString("lastRequest").equals(appSettings.getRequestType()); // [Tablet UI] do distinguish between rotation that gets the last selected movie and first open or request that gets the first element to view in details
         dataRetriever = new MovieDataRetriever(this);
         calledFromMenu = false;
-        getMoviesList(appSettings.getRequestType(),true);
+        getMoviesList(appSettings.getRequestType());
         return rootView;
     }
 
@@ -97,10 +98,10 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         calledFromMenu = true;
         switch (item.getItemId()){
             case R.id.action_popular:
-                getMoviesList(getString(R.string.popular),true);
+                getMoviesList(getString(R.string.popular));
                 break;
             case R.id.action_top:
-                getMoviesList(getString(R.string.top_rated),true);
+                getMoviesList(getString(R.string.top_rated));
                 break;
             case R.id.action_favorite:
                 getMoviesFavourites();
@@ -146,7 +147,9 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                         }
                     }
                 }catch (ClassCastException e){
-                    Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.fetch_failed), Toast.LENGTH_SHORT).show();
+                }catch (IndexOutOfBoundsException e){
+                    Toast.makeText(getContext(), getString(R.string.fetch_failed), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -158,16 +161,20 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         dataRetriever.retrieveFavourites();
     }
 
-    private void getMoviesList(String requestType,boolean online) {
+    private void getMoviesList(String requestType) {
         if(requestType .equals(getString(R.string.find_fav)))
-            getMoviesFavourites();
+            getMoviesFavourites(); // always get offline no connection needed.
         else{
+            // check for connectivity first
+            if(!((BaseActivity)getActivity()).isConnected()){
+                Toast.makeText(getActivity(), R.string.no_connection, Toast.LENGTH_LONG).show();
+            }
+            // continue to get data, if device is offline, it will try to get data from database.
             appSettings.setRequestType(requestType);
             if(dataRetriever != null) {
                 dataRetriever.setRetrieveListener(this);
                 dataRetriever.cancelRequestIfRunning();
-                if(online)
-                    dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class,true);
+                dataRetriever.retrieve(appSettings.getRequestUrl(),Response.class,true);
                 progressBar.setVisibility(View.VISIBLE);
             }
         }
@@ -191,13 +198,14 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                 }
             }
         }catch (ClassCastException e){
-            Toast.makeText(getContext(), "Failed to fetch Data!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.fetch_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onRetrieveFailed() {
         progressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(getContext(), R.string.fetch_failed, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -213,7 +221,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
             if(appSettings !=null) {
                 String requestType = appSettings.getRequestType();
                 if(requestType.equals(getString(R.string.find_fav))) // update favourites list
-                    getMoviesList(requestType,true);
+                    getMoviesList(requestType);
             }
     }
 }

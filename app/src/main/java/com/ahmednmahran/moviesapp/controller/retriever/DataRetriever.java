@@ -36,7 +36,7 @@ public class DataRetriever implements DataRetrieveListener {
 
             @Override
             public void onRetrieveFailed() {
-
+                DataRetriever.this.onRetrieveFailed();
             }
         });
         fetchDataTask.execute(url);
