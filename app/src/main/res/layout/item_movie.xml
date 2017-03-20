@@ -9,4 +9,14 @@
         android:layout_gravity="center"
         android:padding="5dp"
         />
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#90000000"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        android:layout_gravity="bottom"/>
 </FrameLayout>

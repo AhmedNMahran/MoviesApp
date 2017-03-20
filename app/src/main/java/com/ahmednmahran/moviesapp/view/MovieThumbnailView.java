@@ -2,6 +2,7 @@ package com.ahmednmahran.moviesapp.view;
 
 import android.content.Context;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
@@ -30,12 +31,13 @@ public class MovieThumbnailView extends MovieView{
         super.inflateMovieView(R.layout.item_movie);
         if(rootView ==  null ) {
             if(mInflateListener != null)
-                mInflateListener.onInflateFailed(this); // view inflated successfully
+                mInflateListener.onInflateFailed(this); //failed to inflate this view
             return this;
         }
         imgThumbnail = (ImageView) rootView.findViewById(R.id.imgMovieThumbnail);
+        tvDate = (TextView) rootView.findViewById(R.id.tvDate);
         if(mInflateListener != null)
-            mInflateListener.onInflated(this); //failed to inflate this view
+            mInflateListener.onInflated(this); // view inflated successfully
         return this;
     }
 }

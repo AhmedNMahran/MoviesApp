@@ -2,6 +2,7 @@ package com.ahmednmahran.moviesapp.controller.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,10 +23,15 @@ import com.ahmednmahran.moviesapp.controller.retriever.MovieDataRetriever;
 import com.ahmednmahran.moviesapp.model.AppSettings;
 import com.ahmednmahran.moviesapp.model.Movie;
 import com.ahmednmahran.moviesapp.model.Response;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Ahmed Nabil on 07/08/2016.
@@ -35,7 +41,7 @@ import java.util.HashMap;
  * A Fragment used to view the main list of movies
  *
  */
-public class MainActivityFragment extends Fragment implements DataRetrieveListener {
+public class MainActivityFragment extends Fragment implements DataRetrieveListener, DatePickerDialog.OnDateSetListener{
 
     private RecyclerView mRecyclerView;
     private GridLayoutManager mLayoutManager;
@@ -49,6 +55,8 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
     private boolean shownDefaultMovie;
     private boolean calledFromMenu;
     private View rootView;
+    private String pickedDate;
+    private FloatingActionButton fabFilter;
 
     public MainActivityFragment() {
     }
@@ -64,6 +72,13 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        fabFilter = (FloatingActionButton) rootView.findViewById(R.id.fab_filter);
+        fabFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFilterDialog();
+            }
+        });
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
@@ -78,6 +93,18 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         calledFromMenu = false;
         getMoviesList(appSettings.getRequestType());
         return rootView;
+    }
+
+
+    private void showFilterDialog() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                MainActivityFragment.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
     }
 
     @Override
@@ -171,6 +198,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
             }
             // continue to get data, if device is offline, it will try to get data from database.
             appSettings.setRequestType(requestType);
+            appSettings.setRequestDateFilter(pickedDate);
             if(dataRetriever != null) {
                 dataRetriever.setRetrieveListener(this);
                 dataRetriever.cancelRequestIfRunning();
@@ -187,7 +215,23 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
         try{
             Movie[] movies = ((Response)data).getResults();
             appSettings.saveMovies(movies);
-            moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), Arrays.asList(movies));
+
+            List<Movie> movieList = new ArrayList<>();
+
+            //filter the retrieved data
+            if(pickedDate != null && !pickedDate.isEmpty()) {
+                for (Movie movie: movies){
+                    if (movie.getReleaseDate().equalsIgnoreCase(pickedDate))
+                        movieList.add(movie);
+                }
+                if(movieList.isEmpty()) {
+                    Toast.makeText(getActivity(), R.string.no_match, Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                movieList = Arrays.asList(movies);
+            }
+                moviesRecyclerAdapter = new MoviesRecyclerAdapter(getContext(), movieList);
+            pickedDate = "";
             mRecyclerView.setAdapter(moviesRecyclerAdapter);
             if(getResources().getBoolean(R.bool.isTablet)){
                 if(!shownDefaultMovie || calledFromMenu){
@@ -223,5 +267,17 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
                 if(requestType.equals(getString(R.string.find_fav))) // update favourites list
                     getMoviesList(requestType);
             }
+    }
+
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String yearString = String.format("%04d",year);
+        String monthString = String.format("%02d",(monthOfYear+1));
+        String dayString = String.format("%02d",dayOfMonth);
+        pickedDate = yearString + "-" + monthString + "-" + dayString;
+
+        Toast.makeText(getActivity(), pickedDate, Toast.LENGTH_SHORT).show();
+        getMoviesList(appSettings.getRequestType());
     }
 }

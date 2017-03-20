@@ -129,4 +129,15 @@ public class AppSettings {
         return settings.getInt("defaultMovieId",0);
     }
 
+
+    public void setRequestDateFilter(String pickedDate) {
+        if(pickedDate == null || pickedDate.trim().isEmpty())
+            pickedDate ="";
+        editor.putString("filterDate",pickedDate).commit();
+
+    }
+    public String getRequestDateFilter() {
+        return settings.getString("filterDate","");
+
+    }
 }

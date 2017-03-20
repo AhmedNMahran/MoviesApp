@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
@@ -23,6 +24,7 @@ public class MovieView extends FrameLayout{
     protected LayoutInflater mInflater;
     protected View rootView;
     protected ImageView imgThumbnail;
+    protected TextView tvDate;
     private static final String TAG=MovieView.class.getSimpleName();
 
     public MovieView(Context context) {
@@ -69,7 +71,7 @@ public class MovieView extends FrameLayout{
         if(posterPath == null)
             posterPath = "";
         Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185//"+ posterPath).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.stat_notify_error).fit().into(imgThumbnail);
-
+        tvDate.setText(movie.getReleaseDate());
     }
 
     public void setInflateListener(InflateListener mInflateListener) {

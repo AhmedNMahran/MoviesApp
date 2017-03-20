@@ -8,11 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.fragment.DetailsFragment;
 import com.ahmednmahran.moviesapp.controller.fragment.MainActivityFragment;
 import com.ahmednmahran.moviesapp.model.AppSettings;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.zplesac.connectionbuddy.ConnectionBuddy;
 import com.zplesac.connectionbuddy.models.ConnectivityEvent;
 import com.zplesac.connectionbuddy.models.ConnectivityState;
@@ -25,11 +27,12 @@ import com.zplesac.connectionbuddy.models.ConnectivityState;
  * An Activity used to view the main list of movies, using {@link com.ahmednmahran.moviesapp.controller.fragment.MainActivityFragment}
  *
  */
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity  {
 
     private DetailsFragment detailsFragment;
 //    private FloatingActionButton favoriteFab;
     private AppSettings appPreference;
+    private MainActivityFragment moviesListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class MainActivity extends BaseActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         appPreference = AppSettings.getAppPreference(getApplicationContext());
+
+
         if(getResources().getBoolean(R.bool.isTablet)){
             detailsFragment = ((DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.detailsFragment));
             RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
@@ -57,5 +62,3 @@ public class MainActivity extends BaseActivity{
 
     }
 }
-
-// Thanks for reviewing my code ^_^

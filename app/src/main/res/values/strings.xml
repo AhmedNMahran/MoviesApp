@@ -25,6 +25,8 @@
     <string name="detail_request_type">detailRequest</string>
     <string name="no_connection">No Internet connection, trying to get offline data...</string>
     <string name="fetch_failed">Failed to fetch Data!</string>
+    <string name="latest_first">Latest First</string>
+    <string name="no_match">Didn\'t find matchs for the selected date</string>
 
 
 </resources>
