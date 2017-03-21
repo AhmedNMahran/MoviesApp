@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.ahmednmahran.moviesapp.R;
 import com.ahmednmahran.moviesapp.controller.listener.InflateListener;
+import com.ahmednmahran.moviesapp.model.Movie;
 
 /**
  * Created by Ahmed Nabil on 12/08/2016.
@@ -39,5 +40,11 @@ public class MovieThumbnailView extends MovieView{
         if(mInflateListener != null)
             mInflateListener.onInflated(this); // view inflated successfully
         return this;
+    }
+
+    @Override
+    public void populateUiData(Movie movie) {
+        super.populateUiData(movie);
+        tvDate.setText(movie.getReleaseDate());
     }
 }

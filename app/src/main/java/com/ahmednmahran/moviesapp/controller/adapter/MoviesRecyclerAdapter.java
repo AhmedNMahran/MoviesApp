@@ -51,7 +51,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
                 if(movies != null)
                 {
                     final Movie movie = movies.get(holder.getAdapterPosition());
-                    holder.movieView.populateUiData(movie);
+                    ((MovieThumbnailView)holder.movieView).populateUiData(movie);
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

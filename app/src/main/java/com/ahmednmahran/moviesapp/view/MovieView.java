@@ -71,7 +71,6 @@ public class MovieView extends FrameLayout{
         if(posterPath == null)
             posterPath = "";
         Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185//"+ posterPath).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.stat_notify_error).fit().into(imgThumbnail);
-        tvDate.setText(movie.getReleaseDate());
     }
 
     public void setInflateListener(InflateListener mInflateListener) {
