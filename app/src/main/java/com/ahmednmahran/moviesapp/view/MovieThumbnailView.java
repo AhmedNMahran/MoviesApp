@@ -17,6 +17,8 @@ import com.ahmednmahran.moviesapp.model.Movie;
  */
 public class MovieThumbnailView extends MovieView{
 
+    protected TextView tvDate;
+
     public MovieThumbnailView(Context context, InflateListener mInflateListener) {
         super(context, mInflateListener);
     }

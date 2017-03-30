@@ -24,7 +24,6 @@ public class MovieView extends FrameLayout{
     protected LayoutInflater mInflater;
     protected View rootView;
     protected ImageView imgThumbnail;
-    protected TextView tvDate;
     private static final String TAG=MovieView.class.getSimpleName();
 
     public MovieView(Context context) {

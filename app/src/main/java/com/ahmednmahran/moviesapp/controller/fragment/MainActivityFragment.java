@@ -193,7 +193,7 @@ public class MainActivityFragment extends Fragment implements DataRetrieveListen
             getMoviesFavourites(); // always get offline no connection needed.
         else{
             // check for connectivity first
-            if(!((BaseActivity)getActivity()).isConnected()){
+            if(!((BaseActivity)getActivity()).isNetworkAvailable()){
                 Toast.makeText(getActivity(), R.string.no_connection, Toast.LENGTH_LONG).show();
             }
             // continue to get data, if device is offline, it will try to get data from database.
